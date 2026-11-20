@@ -59,3 +59,11 @@ async def get_students(
         "department": department,
         "year": year
     }
+@app.get("/students/{student_id}/courses/{course_id}")
+async def get_student_course(student_id: int, course_id: int):
+
+    return {
+        "student_id": student_id,
+        "course_id": course_id,
+        "message": "Student course information retrieved successfully"
+    }
