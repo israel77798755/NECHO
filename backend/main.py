@@ -67,3 +67,16 @@ async def get_student_course(student_id: int, course_id: int):
         "course_id": course_id,
         "message": "Student course information retrieved successfully"
     }
+@app.get("/students/{student_id}/courses/{course_id}/progress")
+async def get_course_progress(
+    student_id: int,
+    course_id: int,
+    include_progress: bool = True
+):
+
+    return {
+        "student_id": student_id,
+        "course_id": course_id,
+        "include_progress": include_progress,
+        "message": "Course progress retrieved successfully"
+    }
