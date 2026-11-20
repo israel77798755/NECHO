@@ -10,17 +10,99 @@ app = FastAPI(
 )
 
 
-# Define the structure of a chat message
+# ==============================
+# PYDANTIC MODELS
+# ==============================
+
 class ChatRequest(BaseModel):
     message: str
+
+
 class CareerGoalRequest(BaseModel):
     career_goal: str
     current_year: int
+
+
 class CareerGoalResponse(BaseModel):
     student_id: int
     career_goal: str
     current_year: int
     message: str
+
+
+class StudentCreate(BaseModel):
+    name: str
+    department: str
+    current_year: int
+
+
+# ==============================
+# ROOT AND HEALTH ENDPOINTS
+# ==============================
+
+@app.get("/")
+async def root():
+    return {
+        "message": "Welcome to NECHO API!",
+        "status": "running"
+    }
+
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy"
+    }
+
+
+# ==============================
+# CHAT ENDPOINT
+# ==============================
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    return {
+        "message_received": request.message,
+        "reply": "NECHO received your message successfully!"
+    }
+
+
+# ==============================
+# STUDENT ENDPOINTS
+# ==============================
+
+# Retrieve students using query parameters
+@app.get("/students")
+async def get_students(
+    department: str = "all",
+    year: int = 1
+):
+    return {
+        "message": "Student information retrieved successfully",
+        "department": department,
+        "year": year
+    }
+
+
+# Receive new student information
+@app.post("/students")
+async def create_student(student: StudentCreate):
+    return {
+        "message": "Student information received successfully",
+        "student": student
+    }
+
+
+# Retrieve an individual student
+@app.get("/students/{student_id}")
+async def get_student(student_id: int):
+    return {
+        "student_id": student_id,
+        "message": "Student information retrieved successfully"
+    }
+
+
+# Submit a student's career goal
 @app.post(
     "/students/{student_id}/career-goal",
     response_model=CareerGoalResponse,
@@ -36,65 +118,28 @@ async def save_career_goal(
         "current_year": request.current_year,
         "message": "Career goal received successfully"
     }
-# Root endpoint
-@app.get("/")
-async def root():
-    return {
-        "message": "Welcome to NECHO API!",
-        "status": "running"
-    }
 
 
-# Health-check endpoint
-@app.get("/health")
-async def health_check():
-    return {
-        "status": "healthy"
-    }
-
-
-# Chat endpoint
-@app.post("/api/chat")
-async def chat(request: ChatRequest):
-
-    return {
-        "message_received": request.message,
-        "reply": "NECHO received your message successfully!"
-    }
-
-# Student endpoint using a path parameter
-@app.get("/students/{student_id}")
-async def get_student(student_id: int):
-
-    return {
-        "student_id": student_id,
-        "message": "Student information retrieved successfully"
-    }
-# Students endpoint using a query parameter
-@app.get("/students")
-async def get_students(
-    department: str = "all",
-    year: int = 1
-):
-    return {
-        "department": department,
-        "year": year
-    }
+# Retrieve a student's course
 @app.get("/students/{student_id}/courses/{course_id}")
-async def get_student_course(student_id: int, course_id: int):
-
+async def get_student_course(
+    student_id: int,
+    course_id: int
+):
     return {
         "student_id": student_id,
         "course_id": course_id,
         "message": "Student course information retrieved successfully"
     }
+
+
+# Retrieve course progress
 @app.get("/students/{student_id}/courses/{course_id}/progress")
 async def get_course_progress(
     student_id: int,
     course_id: int,
     include_progress: bool = True
 ):
-
     return {
         "student_id": student_id,
         "course_id": course_id,
