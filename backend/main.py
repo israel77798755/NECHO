@@ -34,7 +34,14 @@ class StudentCreate(BaseModel):
     name: str
     department: str
     current_year: int
-
+class StudentUpdate(BaseModel):
+    name: str
+    department: str
+    current_year: int
+class StudentPartialUpdate(BaseModel):
+    name: str | None = None
+    department: str | None = None
+    current_year: int | None = None
 
 # ==============================
 # ROOT AND HEALTH ENDPOINTS
@@ -91,8 +98,32 @@ async def create_student(student: StudentCreate):
         "message": "Student information received successfully",
         "student": student
     }
-
-
+@app.put("/students/{student_id}")
+async def update_student(
+    student_id: int,
+    student: StudentUpdate
+):
+    return {
+        "message": "Student replacement information received successfully",
+        "student_id": student_id,
+        "updated_student": student
+    }
+@app.patch("/students/{student_id}")
+async def partial_update_student(
+    student_id: int,
+    student: StudentPartialUpdate
+):
+    return {
+        "message": "Student partial update information received successfully",
+        "student_id": student_id,
+        "updated_fields": student.model_dump(exclude_unset=True)
+    }
+@app.delete("/students/{student_id}")
+async def delete_student(student_id: int):
+    return {
+        "message": "Student deletion request received successfully",
+        "student_id": student_id
+    }
 # Retrieve an individual student
 @app.get("/students/{student_id}")
 async def get_student(student_id: int):
