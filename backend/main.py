@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 from pydantic import BaseModel
 
 # Create the NECHO API application
@@ -23,7 +23,8 @@ class CareerGoalResponse(BaseModel):
     message: str
 @app.post(
     "/students/{student_id}/career-goal",
-    response_model=CareerGoalResponse
+    response_model=CareerGoalResponse,
+    status_code=status.HTTP_201_CREATED
 )
 async def save_career_goal(
     student_id: int,
