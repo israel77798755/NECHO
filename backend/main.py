@@ -13,8 +13,21 @@ app = FastAPI(
 # Define the structure of a chat message
 class ChatRequest(BaseModel):
     message: str
+class CareerGoalRequest(BaseModel):
+    career_goal: str
+    current_year: int
+@app.post("/students/{student_id}/career-goal")
+async def save_career_goal(
+    student_id: int,
+    request: CareerGoalRequest
+):
 
-
+    return {
+        "student_id": student_id,
+        "career_goal": request.career_goal,
+        "current_year": request.current_year,
+        "message": "Career goal received successfully"
+    }
 # Root endpoint
 @app.get("/")
 async def root():
