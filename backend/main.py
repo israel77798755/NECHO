@@ -49,3 +49,11 @@ async def get_student(student_id: int):
         "student_id": student_id,
         "message": "Student information retrieved successfully"
     }
+# Students endpoint using a query parameter
+@app.get("/students")
+async def get_students(department: str, year: int):
+
+    return {
+        "department": department,
+        "year": year
+    }
