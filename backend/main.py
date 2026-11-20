@@ -16,12 +16,19 @@ class ChatRequest(BaseModel):
 class CareerGoalRequest(BaseModel):
     career_goal: str
     current_year: int
-@app.post("/students/{student_id}/career-goal")
+class CareerGoalResponse(BaseModel):
+    student_id: int
+    career_goal: str
+    current_year: int
+    message: str
+@app.post(
+    "/students/{student_id}/career-goal",
+    response_model=CareerGoalResponse
+)
 async def save_career_goal(
     student_id: int,
     request: CareerGoalRequest
 ):
-
     return {
         "student_id": student_id,
         "career_goal": request.career_goal,
